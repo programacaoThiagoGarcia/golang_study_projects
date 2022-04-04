@@ -13,22 +13,25 @@ func main() {
 	results := make(chan int, numJobs)
 
 	for w := 1; w <= numWorkers; w++ {
+		fmt.Println("w ---> ", w)
 		go worker(w, jobs, results)
 	}
 
 	for j := 1; j <= numJobs; j++ {
+		fmt.Println(" Job <--- ", j)
 		jobs <- j
 	}
 	close(jobs)
 
 	for a := 1; a <= numJobs; a++ {
-		<-results
+		fmt.Println(" Result <--- ", <-results)
 	}
 
 }
 
 // Recebe um id e dois canais que vão controlar a quantidade de jobs e o outro os resultados
 func worker(id int, jobs <-chan int, result chan<- int) {
+	fmt.Println("w <--- ", id)
 	for j := range jobs {
 		fmt.Println("worker", id, "started job", j)
 		time.Sleep(time.Second)
